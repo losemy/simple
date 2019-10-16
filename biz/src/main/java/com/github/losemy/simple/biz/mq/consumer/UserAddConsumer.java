@@ -5,7 +5,10 @@ import com.github.losemy.simple.biz.mq.domain.AddUserEvent;
 import com.github.losemy.simple.integration.es.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import org.apache.rocketmq.client.consumer.rebalance.AllocateMessageQueueConsistentHash;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
+import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
+import org.apache.rocketmq.spring.annotation.ConsumeMode;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.apache.rocketmq.spring.core.RocketMQPushConsumerLifecycleListener;
@@ -15,12 +18,13 @@ import org.springframework.stereotype.Service;
 /**
  * @author lose
  * @date 2019-09-07
+ * 顺序消费
  **/
 @Service
 @RocketMQMessageListener(topic = "${demo.rocketmq.userAddTopic}",
-        consumerGroup = "user-add-consumer", selectorExpression = "add")
+        consumerGroup = "user-add-consumer", selectorExpression = "add",consumeMode = ConsumeMode.ORDERLY)
 @Slf4j
-public class UserAddConsumer implements RocketMQListener<AddUserEvent>, RocketMQPushConsumerLifecycleListener {
+public class UserAddConsumer implements RocketMQListener<AddUserEvent>,RocketMQPushConsumerLifecycleListener {
 
     @Autowired
     private UserRepository userRepository;
@@ -49,8 +53,10 @@ public class UserAddConsumer implements RocketMQListener<AddUserEvent>, RocketMQ
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_LAST_OFFSET);
         consumer.setPullBatchSize(5);
         consumer.setPullInterval(2000);
+        //只是用来处理接收是否成功？
+        consumer.setMessageModel(MessageModel.CLUSTERING);
+        //是否设置virtualNode cnt
+        consumer.setAllocateMessageQueueStrategy(new AllocateMessageQueueConsistentHash());
     }
-
-
 
 }

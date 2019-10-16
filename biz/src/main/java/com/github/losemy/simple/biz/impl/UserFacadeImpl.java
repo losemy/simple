@@ -81,7 +81,6 @@ public class UserFacadeImpl implements UserFacade {
             }
         });
 
-
         return commonResp;
     }
 
