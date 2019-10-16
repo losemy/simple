@@ -47,7 +47,7 @@
         <jjwt.version>0.9.0</jjwt.version>
         <java-jwt.version>3.8.0</java-jwt.version>
         <hutool-all.version>4.6.3</hutool-all.version>
-        <zookeeper.version>3.4.10</zookeeper.version>
+        <zookeeper.version>3.4.14</zookeeper.version>
         <curator.version>4.2.0</curator.version>
         <elastic-job.version>2.1.5</elastic-job.version>
 
