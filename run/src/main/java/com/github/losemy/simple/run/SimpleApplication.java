@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @SpringBootApplication
 @ComponentScan("com.github.losemy.simple")
-@EnableAspectJAutoProxy(proxyTargetClass = true)
+@EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 @EnableTransactionManagement
 @EnableDubbo(scanBasePackages = "com.github.losemy.simple.biz")
 @EnableElasticsearchRepositories(basePackages = "com.github.losemy.simple")

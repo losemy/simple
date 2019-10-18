@@ -12,10 +12,15 @@ import java.util.concurrent.TimeUnit;
 @EventBusListener
 public class StringEventListener{
 
+    /**
+     * 模拟长时间消耗
+     * @param event
+     * @throws InterruptedException
+     */
     @Subscribe
     @AllowConcurrentEvents
     public void listener(String event) throws InterruptedException {
-        TimeUnit.MILLISECONDS.sleep(10);
+        TimeUnit.MILLISECONDS.sleep(100);
         System.out.println("receive msg 1 :"+event);
     }
 }
