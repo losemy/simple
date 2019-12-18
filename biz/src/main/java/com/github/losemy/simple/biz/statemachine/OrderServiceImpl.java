@@ -88,7 +88,7 @@ public class OrderServiceImpl {
 
     /**
      * 发送订单状态转换事件
-     *
+     * 放在基础类中，或者说放在所有需要使用状态机的基础类中
      * @param message
      * @param order
      * @return

@@ -19,19 +19,26 @@ public class ExceptionHandler {
         //本地受检异常 ：自定义异常
         //系统其它模块返回的异常
 
-        log.error("业务层异常",e);
+        // means message 需要将异常描述清楚，可以有个直观的感受
+
+        //理论上来说 不应该出现 nullPointerException这样的异常，应该使用预检查的方式规避
+
+        log.error(e.getMessage(),e);
+        // 不够优雅
         if(e instanceof DuplicateKeyException){
-            return buildCommonResp(CodeEnum.UNKNOWN_ERROR,e.getMessage());
+            return buildCommonResp(CodeEnum.DATA_DUPLICATION,e.getMessage());
         }
 
+        // 理论上来说根本不会触发
         if(e instanceof SQLIntegrityConstraintViolationException) {
-
+            return buildCommonResp(CodeEnum.DATA_DUPLICATION,e.getMessage());
         }
 
         if(e instanceof Exception){
             return buildCommonResp(CodeEnum.UNKNOWN_ERROR,e.getMessage());
         }
 
+        // 啥都没匹配上
         return buildCommonResp(CodeEnum.UNKNOWN_ERROR);
     }
 

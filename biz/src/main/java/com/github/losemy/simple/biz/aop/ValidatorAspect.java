@@ -68,7 +68,7 @@ public class ValidatorAspect {
                     if (annotation.annotationType().equals(ParamValid.class)) {
                         ParamValid paramValid = (ParamValid) annotation;
                         ValidatorUtil.ValidResult validResult = ValidatorUtil.validate(param, paramValid.value());
-                        //校验到异常快速失败LettuceConnectionConfiguration
+                        //校验到异常快速失败
                         if (validResult.isError()) {
                             return CommonResp.ofError(CodeConstant.PARAM_VALID_ERROR, validResult.getMsg());
                         }

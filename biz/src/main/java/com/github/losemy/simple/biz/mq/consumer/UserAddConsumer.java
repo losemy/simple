@@ -5,8 +5,12 @@ import com.github.losemy.simple.biz.mq.domain.AddUserEvent;
 import com.github.losemy.simple.integration.es.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
+import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
+import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.consumer.rebalance.AllocateMessageQueueConsistentHash;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
+import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.apache.rocketmq.spring.annotation.ConsumeMode;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
@@ -14,6 +18,8 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.apache.rocketmq.spring.core.RocketMQPushConsumerLifecycleListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author lose
@@ -53,10 +59,25 @@ public class UserAddConsumer implements RocketMQListener<AddUserEvent>,RocketMQP
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_LAST_OFFSET);
         consumer.setPullBatchSize(5);
         consumer.setPullInterval(2000);
+
         //只是用来处理接收是否成功？
         consumer.setMessageModel(MessageModel.CLUSTERING);
         //是否设置virtualNode cnt
         consumer.setAllocateMessageQueueStrategy(new AllocateMessageQueueConsistentHash());
+
+        consumer.registerMessageListener(new MessageListenerConcurrently() {
+            @Override
+            public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
+                for (MessageExt messageExt : msgs) {
+                    System.out.println("重试次数:" + messageExt.getReconsumeTimes());
+
+                    System.out.println("接受到的消息:" + new String(messageExt.getBody()));
+                    return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                }
+
+                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+            }
+        });
     }
 
 }

@@ -9,6 +9,7 @@ import com.github.losemy.simple.facade.model.User;
 import com.github.losemy.simple.facade.resp.CommonResp;
 import com.github.losemy.simple.integration.es.repository.UserRepository;
 import com.github.losemy.simple.service.UserService;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -18,20 +19,21 @@ import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author lose
  * @date 2019-09-06
  **/
 @Service
+@Component
 @Slf4j
 public class UserFacadeImpl implements UserFacade {
 
+    @NonNull
     private UserService userService;
 
-
     private RocketMQTemplate rocketMQTemplate;
-
 
     private UserRepository userRepository;
 
@@ -64,24 +66,46 @@ public class UserFacadeImpl implements UserFacade {
         CommonResp commonResp = new CommonResp();
         UserDO userDO = BeanMapper.map(user,UserDO.class);
 
-        System.out.println(userService.save(userDO));
+
+        if(!userService.save(userDO)){
+            throw new RuntimeException("插入数据库失败");
+        }
 
 //        userRepository.save(BeanMapper.map(user, UserES.class));
 
-
-        rocketMQTemplate.asyncSend("demo-user:add", user, new SendCallback() {
+//        rocketMQTemplate.sendOneWay();
+        // 发送都同一个queue，消费的话，按照key消费
+        rocketMQTemplate.asyncSendOrderly("demo-user:add", user, user.getEmail(),
+                new SendCallback(){
             @Override
             public void onSuccess(SendResult sendResult) {
-                log.info("MQ result {}", JSON.toJSONString(sendResult));
+
             }
 
             @Override
-            public void onException(Throwable ex) {
-                log.error("MQ send error", ex);
-            }
-        });
+            public void onException(Throwable e) {
 
-        return commonResp;
+            }
+        },5000);
+
+//        rocketMQTemplate.sendMessageInTransaction()
+        if(user.getEmail()!=null) {
+            rocketMQTemplate.asyncSend("demo-user:add", user, new SendCallback() {
+                @Override
+                public void onSuccess(SendResult sendResult) {
+                    log.info("MQ result {}", JSON.toJSONString(sendResult));
+                }
+
+                @Override
+                public void onException(Throwable ex) {
+                    log.error("MQ send error", ex);
+                }
+            });
+
+            return commonResp;
+        }else{
+            throw new RuntimeException();
+        }
     }
 
     public static void main(String[] args) {

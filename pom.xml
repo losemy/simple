@@ -500,7 +500,7 @@
         <module>integration</module>
         <module>run</module>
         <module>web</module>
-        <module>test</module>
+        <module>com.github.losemy.simple.test</module>
         <module>dal-auto</module>
         <module>common</module>
     </modules>

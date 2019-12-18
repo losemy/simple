@@ -41,7 +41,7 @@ public class UserController {
         return userService.list();
     }
 
-    @GetMapping("/test")
+    @GetMapping("/com.github.losemy.simple.test")
     public ResultVO test(){
         userService.testException();
         return ResultVO.ofSuccess(null);

@@ -15,6 +15,11 @@ import org.springframework.stereotype.Component;
 @WithStateMachine(id = OrderStateMachineConfig.orderStateMachineId)
 public class OrderStateListenerImpl {
 
+    /**
+     * 支付成功之后需要额外通知
+     * @param message
+     * @return
+     */
     @OnTransition(source = "WAIT_PAYMENT", target = "WAIT_DELIVER")
     public boolean payTransition(Message<OrderStatusChangeEvent> message) {
         log.info("----------------------------");

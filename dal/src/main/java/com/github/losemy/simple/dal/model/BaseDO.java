@@ -28,7 +28,7 @@ public class BaseDO implements Serializable {
     @TableField(value = "CREATE_TIME",fill = FieldFill.INSERT)
     private Date createTime;
 
-    /**
+    /**Collectors
      * 更新时间
      */
     @TableField(value = "UPDATE_TIME",fill = FieldFill.INSERT_UPDATE)

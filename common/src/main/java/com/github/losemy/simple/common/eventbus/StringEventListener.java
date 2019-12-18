@@ -14,6 +14,7 @@ public class StringEventListener{
 
     /**
      * 模拟长时间消耗
+     * 同一个消息允许被多次消费
      * @param event
      * @throws InterruptedException
      */

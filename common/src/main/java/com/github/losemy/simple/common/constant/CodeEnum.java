@@ -33,6 +33,7 @@ public enum CodeEnum {
 
     /**
      * 避免没有传入
+     * 需要保证足够安全
      * @param supple
      * @return
      */

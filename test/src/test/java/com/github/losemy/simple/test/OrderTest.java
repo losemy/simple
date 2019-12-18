@@ -1,4 +1,4 @@
-package test;
+package com.github.losemy.simple.test;
 
 import com.github.losemy.simple.biz.statemachine.OrderServiceImpl;
 import com.github.losemy.simple.run.SimpleApplication;

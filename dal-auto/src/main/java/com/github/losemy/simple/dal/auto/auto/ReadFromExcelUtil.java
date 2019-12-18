@@ -79,7 +79,7 @@ public class ReadFromExcelUtil {
     }
 
     public static void main(String[] args){
-        String name = "/home/lose/tests/test.xlsx";
+        String name = "/home/lose/tests/com.github.losemy.simple.test.xlsx";
         System.out.println(readFile(name));
 
     }

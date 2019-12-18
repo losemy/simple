@@ -5,6 +5,7 @@ import com.github.losemy.simple.common.constant.CodeEnum;
 import lombok.Data;
 
 /**
+ * 区分异常，能够更好的对异常做出不同的处理
  * @author lose
  * @date 2019-09-25
  **/

@@ -21,7 +21,7 @@ public class CreateTable {
 
         String currentDir = System.getProperty("user.dir") + File.separator + "dal-auto";
         String name = "/docs/datas/simple-sql.xlsx";
-//        String name = "/docs/datas/test.xlsx";
+//        String name = "/docs/datas/com.github.losemy.simple.test.xlsx";
         List<TableInfo> tables = ReadFromExcelUtil.readFile(name);
 
         TemplateEngine engine = TemplateUtil.createEngine(new TemplateConfig("templates", TemplateConfig.ResourceMode.CLASSPATH));

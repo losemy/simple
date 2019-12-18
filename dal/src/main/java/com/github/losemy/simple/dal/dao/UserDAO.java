@@ -22,4 +22,5 @@ public interface UserDAO extends SimpleBaseMapper<UserDO> {
      * @return
      */
     UserDO selectByNameAndPassword(UserDO user);
+
 }

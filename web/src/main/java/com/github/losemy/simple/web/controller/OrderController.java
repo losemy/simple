@@ -25,7 +25,7 @@ public class OrderController {
     private EventBus eventBus;
 
 
-    @RequestMapping("/test")
+    @RequestMapping("/com.github.losemy.simple.test")
     public Order testOrder(){
         Order order = orderService.creat();
         orderService.pay(order.getId());

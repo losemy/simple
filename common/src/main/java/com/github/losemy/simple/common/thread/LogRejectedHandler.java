@@ -13,6 +13,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class LogRejectedHandler implements RejectedExecutionHandler {
     @Override
     public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+        //任务redo
         log.info("runnable {}",r.toString());
     }
 }

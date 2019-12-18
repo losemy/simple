@@ -1,4 +1,4 @@
-package test;
+package com.github.losemy.simple.test;
 
 import cn.hutool.core.lang.UUID;
 import com.github.losemy.simple.facade.UserFacade;
@@ -12,12 +12,16 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.concurrent.TimeUnit;
+
 
 /**
  * @author lose
  * @date 2019-10-12
  **/
-@State(Scope.Thread)
+@State(Scope.Benchmark)
+@BenchmarkMode(Mode.Throughput)
+@OutputTimeUnit(TimeUnit.SECONDS)
 public class Test {
 
     private ConfigurableApplicationContext context;
@@ -25,9 +29,12 @@ public class Test {
     private UserFacade userFacade;
 
     public static void main(String[] args) throws RunnerException {
-        Options options = new OptionsBuilder().include(Test.class.getName()+".*")
-                .warmupIterations(2).measurementIterations(2).forks(2).build();
-        new Runner(options).run();
+        Options opt = new OptionsBuilder()
+                .include(Test.class.getSimpleName())
+                .shouldFailOnError(true)
+                .build();
+
+        new Runner(opt).run();
     }
 
     /**
@@ -39,11 +46,22 @@ public class Test {
         userFacade = context.getBean(UserFacade.class);
     }
 
+    @TearDown(Level.Trial)
+    public void tearDown() {
+        if (context != null) {
+            context.close();
+        }
+    }
+
+
     /**
      * benchmark执行多次，此注解代表触发我们所要进行基准测试的方法
      */
     @Benchmark
-    public void test(){
+    @Warmup(iterations = 10)
+    @Measurement(iterations = 10)
+    @Threads(10)
+    public void test() throws Exception {
 
         User user =new User();
         user.setName(UUID.fastUUID().toString());
